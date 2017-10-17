@@ -8,6 +8,18 @@ options = cli.parse({
   sourcefolder: [ 's', 'Path to project Intermediate/Source folder', 'path'],
 });
 
+if (options.projectname == null) {
+  console.error("Please pass Project Name argument '-p'. See help -h.")
+  process.exit(1);
+  return;
+}
+
+if (options.sourcefolder == null) {
+  console.error("Please pass Intermediate/Source path argument '-s'. See help -h.")
+  process.exit(1);
+  return;
+}
+
 var TargetFilePath = path.join(options.sourcefolder, options.projectname + "Server.Target.cs");
 
 try {
@@ -15,6 +27,7 @@ try {
 } catch (error) {
   console.error('Error occurred:', error);
   process.exit(1);
+  return;
 }
 
 const replace_options = {
@@ -29,5 +42,7 @@ try {
   console.error('Error occurred:', error);
   process.exit(1);
 }
+
+console.log("Generated server target file.");
 
 process.exit(0);

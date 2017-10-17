@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "description": "Automatically builds a UE4 server target",
   "main": "index.js",
+  "bin": {
+    "ue4-server-target-builder": "lib/servertargetmodule.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [
-    "fuck"
-  ],
   "author": "Michael Allar",
   "license": "MIT",
   "dependencies": {
