@@ -28,7 +28,7 @@ public class GenericShooterServerTarget : TargetRules
 	{
 		Type = TargetType.Server;
 
-		ExtraModuleNames.Add("UE4Game");
+		ExtraModuleNames.Add("UE4Game"); // This would be your project module if not BP only
 	}
 
 	//
