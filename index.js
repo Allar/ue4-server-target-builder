@@ -31,7 +31,7 @@ var bHasCode = fs.pathExistsSync(path.join(options.sourcefolder, 'Source'));
 if (!bHasCode) {
   console.log("Project is detected as a blueprint only project.");
   if (options.emitnocodecode) {
-    console.log(`Will be emitting code ${NoCodeProjectCode} on success due to -bp flag.`);
+    console.log(`Will be emitting code ${NoCodeProjectCode} on success due to -c flag.`);
     SuccessCode = NoCodeProjectCode;
   }
 }
