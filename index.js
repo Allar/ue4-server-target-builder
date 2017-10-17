@@ -9,8 +9,6 @@ options = cli.parse({
   intermediate: [ 't', 'Generate Temp Target (Use Intermediate folder)', 'bool', false]
 });
 
-console.log(JSON.stringify(options));
-
 if (options.projectname == null) {
   console.error("Please pass Project Name argument '-p'. See help -h.")
   process.exit(1);
