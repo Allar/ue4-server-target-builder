@@ -5,8 +5,11 @@ const replace = require('replace-in-file');
 
 options = cli.parse({
   projectname: [ 'p', 'Project Name', 'string' ],
-  sourcefolder: [ 's', 'Path to project Intermediate/Source folder', 'path'],
+  sourcefolder: [ 'd', 'Path to folder', 'path'],
+  intermediate: [ 't', 'Generate Temp Target (Use Intermediate folder)', 'bool', false]
 });
+
+console.log(JSON.stringify(options));
 
 if (options.projectname == null) {
   console.error("Please pass Project Name argument '-p'. See help -h.")
@@ -15,12 +18,19 @@ if (options.projectname == null) {
 }
 
 if (options.sourcefolder == null) {
-  console.error("Please pass Intermediate/Source path argument '-s'. See help -h.")
+  console.error("Please pass project path argument '-d'. See help -h.")
   process.exit(1);
   return;
 }
 
-var TargetFilePath = path.join(options.sourcefolder, options.projectname + "Server.Target.cs");
+var SourceFolder = 'Source';
+
+if (options.intermediate) {
+  console.log('ass');
+  SourceFolder = path.join("Intermediate", SourceFolder);
+}
+
+var TargetFilePath = path.join(options.sourcefolder, SourceFolder, options.projectname + "Server.Target.cs");
 
 try {
   fs.copySync(path.join(__dirname, "Target.cs.template"), TargetFilePath);
@@ -44,5 +54,4 @@ try {
 }
 
 console.log("Generated server target file.");
-
 process.exit(0);
