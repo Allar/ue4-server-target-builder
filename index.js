@@ -56,7 +56,7 @@ const gamename_options = {
 const gamemodule_options = {
   files: TargetFilePath,
   from: /\{GAME_MODULE\}/g,
-  to: options.intermediate ? "UE4Game" : options.projectname
+  to: bHasCode ? options.projectname : "UE4Game"
 };
 
 try {
