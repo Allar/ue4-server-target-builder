@@ -10,4 +10,4 @@ This is an overengineered Node app that lets me generate a server target so that
 
 `ue4-server-target-builder -p GenericShooter -d c:/depot/GenericShooter`
 
-Supply `-t` argument to generate temp target (use intermediate folder) instead.
+Supply `-c` argument in order to return with error code 1 if project is detected as blueprint only project. Useful if you need to know this in your automation chain.

@@ -4,58 +4,46 @@ const fs = require('fs-extra');
 const replace = require('replace-in-file');
 const klawSync = require('klaw-sync')
 
+var SuccessCode = 0;
+var NoCodeProjectCode = 1;
+var FailureCode = 2;
+
 options = cli.parse({
   projectname: [ 'p', 'Project Name', 'string' ],
   sourcefolder: [ 'd', 'Path to folder', 'path'],
-  intermediate: [ 't', 'Generate Temp Target (Use Intermediate folder)', 'bool', false],
-  forceGenerate: [ 'f', 'Force generate, even if c++ server target exists', 'bool', false]
+  emitnocodecode: [ 'c', `Process will exit with return code ${NoCodeProjectCode} if it has no code.`, 'bool', false]
 });
 
 if (options.projectname == null) {
   console.error("Please pass Project Name argument '-p'. See help -h.")
-  process.exit(1);
+  process.exit(FailureCode);
   return;
 }
 
 if (options.sourcefolder == null) {
   console.error("Please pass project path argument '-d'. See help -h.")
-  process.exit(1);
+  process.exit(FailureCode);
   return;
 }
 
-// Check to see if server target already exists in non-temp folder
-var bSkipGeneration = false;
-if (!options.forceGenerate) {
-  try {
-    const filterFn = item => item.path.indexOf(options.projectname + 'Server.Target.cs') >= 0
-    const paths = klawSync(path.join(options.sourcefolder, 'Source'), {nodir: true, filterFn});
-    if (paths.length > 0) {
-      bSkipGeneration = true;
-    }
-  } catch (error){
-    // Source folder doesn't exist
+// Is this a BP only project?
+var bHasCode = fs.pathExistsSync(path.join(options.sourcefolder, 'Source'));
+if (!bHasCode) {
+  console.log("Project is detected as a blueprint only project.");
+  if (options.emitnocodecode) {
+    console.log(`Will be emitting code ${NoCodeProjectCode} on success due to -bp flag.`);
+    SuccessCode = NoCodeProjectCode;
   }
 }
 
-if (bSkipGeneration) {
-  console.log("Skipping target generation, C++ server target detected.");
-  process.exit(0);
-  return;
-}
-
-var SourceFolder = 'Source';
-
-if (options.intermediate) {
-  SourceFolder = path.join("Intermediate", SourceFolder);
-}
-
+var SourceFolder = bHasCode ? "Source" : "Intermediate/Source";
 var TargetFilePath = path.join(options.sourcefolder, SourceFolder, options.projectname + "Server.Target.cs");
 
 try {
   fs.copySync(path.join(__dirname, "Target.cs.template"), TargetFilePath);
 } catch (error) {
   console.error('Error occurred:', error);
-  process.exit(1);
+  process.exit(FailureCode);
   return;
 }
 
@@ -76,8 +64,8 @@ try {
   replace.sync(gamemodule_options);
 } catch (error) {
   console.error('Error occurred:', error);
-  process.exit(1);
+  process.exit(FailureCode);
 }
 
-console.log("Generated server target file.");
-process.exit(0);
+console.log("Generated server target file if it did not already exist.");
+process.exit(SuccessCode);
