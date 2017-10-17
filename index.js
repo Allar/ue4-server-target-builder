@@ -59,14 +59,21 @@ try {
   return;
 }
 
-const replace_options = {
+const gamename_options = {
   files: TargetFilePath,
   from: /\{GAME_NAME\}/g,
   to: options.projectname + 'Server'
 };
 
+const gamemodule_options = {
+  files: TargetFilePath,
+  from: /\{GAME_MODULE\}/g,
+  to: options.intermediate ? "UE4Game" : options.projectname
+};
+
 try {
-  replace.sync(replace_options);
+  replace.sync(gamename_options);
+  replace.sync(gamemodule_options);
 } catch (error) {
   console.error('Error occurred:', error);
   process.exit(1);
